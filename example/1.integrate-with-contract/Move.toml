@@ -1,0 +1,10 @@
+[package]
+name = "example"
+version = "0.0.0"
+
+[dependencies]
+MinitiaStdlib = { git = "https://github.com/initia-labs/movevm.git", subdir = "precompile/modules/minitia_stdlib", rev = "14487bf" }
+
+[addresses]
+minitiad_std =  "0x1"
+deployer = "0x2"
