@@ -1,4 +1,9 @@
-// Assume that example.move is a contract 
+// assume that example.move is the contract you want to score
+// there are three ways to score the contract
+// 1. directly update score to specific value
+// 2. increase score
+// 3. decrease score
+// let's see `example_with_scoring.move` how to score each function in `example.move`
 module deployer::example {
     use minitia_std::signer;
 
