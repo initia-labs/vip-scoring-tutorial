@@ -16,8 +16,8 @@ VIP scoring process is as follows:
     - See [Scoring](#Scoring) section for detailed information about how to score users.
     - Finalize the stage when scoring is done. (no more scoring is allowed)
 3. The VIP agent will take a snapshot of the scores.
-    - VIP agent is the entity that should submit the snapshot and selected by L1 governance.
-    - The agent will take a snapshot only for Minitias that have finalized the stage.
+    - VIP agent is an entity that is in charge of submitting snapshots of the scores, and is selected through Initia governance.
+    - VIP agent will only take snapshots of Minitias that have finalized the stage. 
     - Rewards will be distributed to the users based on the snapshot.
 4. User can claim the reward.
     - User can claim the reward after the snapshot is taken.
