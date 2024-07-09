@@ -1,35 +1,36 @@
 # VIP Scoring Tutorial
 
 ## Introduction
+In VIP, a scoring system exists in order to distribute esINIT rewards to the users based on their activities in a Minitia.
 
 VIP scoring process is as follows:
 
-1. Minitias register on initia VIP system
-    - This process is done by governace votes
-    - Minitias should provide `bridge`, `contract`, `operator` infos (see [vip.move](https://github.com/initia-labs/movevm/blob/cbb9e0d2d903b79fd0d2bcfed1aa01c7503ca98c/precompile/modules/initia_stdlib/sources/vip/vip.move#L868))
-2. Minitias score users each stage
-    - Scoring policy is totally determined by Minitias
-    - Initia provides `vip_score` contracts in default (e.g. [vip_score.move](https://github.com/initia-labs/movevm/blob/main/precompile/modules/minitia_stdlib/sources/vip/score.move) for minimove)
-    - For scoring user, Minitia should whitelist `deployer` address on `vip_score` contract
-    - `deployer` could call `vip_score` contract to score user 
-    - See [Scoring](#Scoring) for detailed scoring ways
-    - Finalize the stage when scoring is done (no more scoring is allowed)
-3. VIP agent will take snapshot of the scoring result
-    - agent will take snapshot only for L2s which finalized the stage
-    - rewrad will be distributed to the users based on the snapshot
-4. User can claim the reward
-    - User can claim the reward after the snapshot is taken
-    - User's reward will be decreased if the user not meet the minimum score for the stage
+1. Whitelist a Minitia on VIP system
+    - Minitias are whitelisted through a whitelisting proposal on Initia's governance.
+    - The information required to whitelist a Minitia are `bridge`, `contract`, and `operator` addresses. (see [vip.move](https://github.com/initia-labs/movevm/blob/cbb9e0d2d903b79fd0d2bcfed1aa01c7503ca98c/precompile/modules/initia_stdlib/sources/vip/vip.move#L868))
+2. Minitias score users based on their activities on each stage.
+    - The scoring policy is determined completely by Minitias.
+    - Initia provides `vip_score` contracts as default. (e.g. [vip_score.move](https://github.com/initia-labs/movevm/blob/main/precompile/modules/minitia_stdlib/sources/vip/score.move) for minimove)
+    - For scoring user, Minitia should whitelist `deployer` address on `vip_score` contract.
+    - The `deployer` could call `vip_score` contract to score users.
+    - See [Scoring](#Scoring) section for detailed information about how to score users.
+    - Finalize the stage when scoring is done. (no more scoring is allowed)
+3. The VIP agent will take a snapshot of the scores.
+    - The agent will take a snapshot only for Minitias that have finalized the stage.
+    - Rewards will be distributed to the users based on the snapshot.
+4. User can claim the reward.
+    - User can claim the reward after the snapshot is taken.
+    - User's reward will be decreased if the user not meet the minimum score for the stage.
 
 
-## Interacting with `vip_score` contract
+## Interacting with the `vip_score` contract
 
-This example is for `minimove` L2. If you are using other vm, check followings
+This example is for `minimove` L2. If you are using other vm, check following:
 
 - miniwasm: [vip-cosmwasm](https://github.com/initia-labs/vip-cosmwasm)
 - minievm: [vip-evm](https://github.com/initia-labs/vip-evm)
 
-Note that the main purpose of `vip_score` is to score users based on the policy of Minitia. VIP agent doesn't care about the scoring policy but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
+Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
 
 ### Whitelist Deployer
 
@@ -46,7 +47,7 @@ public entry fun add_deployer_script(chain: &signer, deployer: address) acquires
 }
 ```
 
-You can add deployer address to whitelist by calling `add_deployer_script` function. This function is only callable by the chain.
+You can add a deployer address to the whitelist by calling `add_deployer_script` function. This function is only callable by the chain.
 
 ```typescript
 const msg = new MsgExecuteMessages(validatorAddr, [
@@ -66,7 +67,7 @@ By this, `deployer` can call `vip_score` contract to score user.
 
 ### Scoring
 
-There are two ways to score user.
+There are two ways to score users.
 
 #### 1. Integrate with Contract
 
