@@ -69,9 +69,11 @@ By this, `deployer` can call `vip_score` contract to score user.
 
 There are two ways to score users.
 
-#### 1. Integrate with Contract
+#### 1. Integrate with a smart contract
 
-This method integrates scoring logic with the contract. This is useful when the scoring logic is simple and can be done in a single transaction. Check the example contract. See [example](./example/1.integrate-with-contract/)
+This method integrates scoring logic with the smart contract. This is useful when the scoring logic is simple and can be done in a single transaction. 
+
+Check the example contract. See [example](./example/1.integrate-with-contract/)
 
 #### 2. Update with script
 
@@ -105,12 +107,14 @@ public entry fun update_score_script(
 ```
 
 
-Update the score by calling `update_score_script` function will exceed the gas limit if the number of users is too large. In this case, you can divide the users into multiple transactions. Check the example script to update the score. See [example](./example/2.update-with-script/)
+Calling `update_score_script` function might exceed the gas limit if the number of users is too large. In this case, you can divide the users into multiple transactions. 
+
+Check the example script to update the score. See [example](./example/2.update-with-script/)
 
 
 ### Finalize Stage
 
-This is the last step of the scoring process. After this, no more scoring is allowed. If the stage is not finalized, the VIP agent will not take a snapshot of the scoring result.
+Finalizing the stage is the last step of the scoring process. After this, no more scoring is allowed until the next stage. Stage must be finalized in order for the VIP agent to take a snapshot of the scoring result. If not finalized, reward distribution will not happen. 
 
 ```rust
 // vip_score.move
