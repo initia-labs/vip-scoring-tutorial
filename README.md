@@ -32,7 +32,7 @@ This example is for `minimove` L2. If you are using other vm, check following:
 
 Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
 
-### Whitelist Deployer
+### Step 1. Whitelist Deployer
 
 This limits the deployer address that can call `vip_score` contract. This is to prevent unauthorized access to the contract.
 
@@ -65,7 +65,7 @@ const msg = new MsgExecuteMessages(validatorAddr, [
 
 By this, `deployer` can call `vip_score` contract to score user.
 
-### Scoring
+### Step 2. Scoring
 
 There are two ways to score users.
 
@@ -112,7 +112,7 @@ Calling `update_score_script` function might exceed the gas limit if the number 
 Check the example script to update the score. See [example](./example/2.update-with-script/)
 
 
-### Finalize Stage
+### Step 3. Finalize Stage
 
 Finalizing the stage is the last step of the scoring process. After this, no more scoring is allowed until the next stage. Stage must be finalized in order for the VIP agent to take a snapshot of the scoring result. If not finalized, reward distribution will not happen. 
 
