@@ -16,6 +16,7 @@ VIP scoring process is as follows:
     - See [Scoring](#Scoring) section for detailed information about how to score users.
     - Finalize the stage when scoring is done. (no more scoring is allowed)
 3. The VIP agent will take a snapshot of the scores.
+    - VIP agent is the entity that should submit the snapshot and selected by L1 governance.
     - The agent will take a snapshot only for Minitias that have finalized the stage.
     - Rewards will be distributed to the users based on the snapshot.
 4. User can claim the reward.
@@ -75,6 +76,8 @@ This method integrates scoring logic with the smart contract. This is useful whe
 
 Check the example contract. See [example](./example/1.integrate-with-contract/)
 
+> ❗Note❗ For integrate with contract, you should call `prepare_stage` function before scoring users. You can call this function only once for each stage. This function will initialize the stage and set the stage as active. See `fun prepare_stage_script()` function in [score_helper.move](./example/1.integrate-with-contract/sources/score_helper.move)
+
 #### 2. Update with script
 
 This method is useful when the scoring logic is complex and requires multiple transactions. In this case, you can update all scores at once by calling `update_score_script` function.
@@ -109,7 +112,7 @@ public entry fun update_score_script(
 
 Calling `update_score_script` function might exceed the gas limit if the number of users is too large. In this case, you can divide the users into multiple transactions. 
 
-Check the example script to update the score. See [example](./example/2.update-with-script/)
+Check the example script to update the score. See [example](./example/2.update-with-script)
 
 
 ### Step 3. Finalize Stage
