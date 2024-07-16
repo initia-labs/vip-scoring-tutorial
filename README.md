@@ -95,7 +95,7 @@ You have to add your bcs serialized `deployerAddr` in `args` field.
       "type_args":[],
       "args":[
           "AAAAAAAAAAAAAAAAcj54lEZt6YOXbMVDAvnENrMpEQY=" // deployerAddr
-      ],
+      ]
     }
   ]
 }
