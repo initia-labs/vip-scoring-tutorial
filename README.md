@@ -37,6 +37,9 @@ Note that the main purpose of `vip_score` is to score users based on the Minitia
 
 This limits the deployer address that can call `vip_score` contract. This is to prevent unauthorized access to the contract.
 
+> ❗Note❗ Same deployer can't be added more than oncet/sources/score_helper.move)
+
+ 
 ```rust
 // vip_score.move
 public entry fun add_deployer_script(chain: &signer, deployer: address) acquires ModuleStore {
@@ -51,7 +54,7 @@ public entry fun add_deployer_script(chain: &signer, deployer: address) acquires
 #### 1. Using `initia.js`
 
 You can add a deployer address to the whitelist by calling `add_deployer_script` function. This function is only callable by the chain.
-
+ 
 ```typescript
 const msg = new MsgExecuteMessages(validatorAddr, [
     new MsgGovExecute(
@@ -68,14 +71,14 @@ const msg = new MsgExecuteMessages(validatorAddr, [
 
 #### 2. Using `minitiad`
 
-You have to add your bcs serialized `deployerAddr` in `args` field. 
+You have to add your bcs serialized `deployerAddr` in `args` field.
 
 > For now, we can serialize bcs serialized addr using `initia.js`
 > we will soon support bcs serialization using `minitiad`
 > 
-> ```
+> ```typescript
 > import { bcs } from "@initia/initia.js"
-> console.log(bcs.address().serialize("init1wgl839zxdh5c89mvc4ps97wyx6ejjygxs4qmcx").toBase64())
+> console.log(bcs.address().serialize("init1wgl839zxdh5c89mvc4ps97wyx6ejjygxs4qmcx").toBase64()) // AAAAAAAAAAAAAAAAcj54lEZt6YOXbMVDAvnENrMpEQY=
 > ```
 
 ```json
@@ -107,7 +110,6 @@ minitiad tx opchild execute-messages ./msg.json \
   --gas-adjustment 1.5 \
   --node [rpc-url]
 ```
-
 
 By this, `deployer` can call `vip_score` contract to score user.
 
