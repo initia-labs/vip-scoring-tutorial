@@ -48,6 +48,8 @@ public entry fun add_deployer_script(chain: &signer, deployer: address) acquires
 }
 ```
 
+#### 1. Using `initia.js`
+
 You can add a deployer address to the whitelist by calling `add_deployer_script` function. This function is only callable by the chain.
 
 ```typescript
@@ -63,6 +65,49 @@ const msg = new MsgExecuteMessages(validatorAddr, [
     )
 ])
 ```
+
+#### 2. Using `minitiad`
+
+You have to add your bcs serialized `deployerAddr` in `args` field. 
+
+> For now, we can serialize bcs serialized addr using `initia.js`
+> we will soon support bcs serialization using `minitiad`
+> 
+> ```
+> import { bcs } from "@initia/initia.js"
+> console.log(bcs.address().serialize("init1wgl839zxdh5c89mvc4ps97wyx6ejjygxs4qmcx").toBase64())
+> ```
+
+```json
+// msg.json
+{
+  "messages": [
+    {
+      "@type": "/initia.move.v1.MsgGovExecute",
+      "authority": "init1gz9n8jnu9fgqw7vem9ud67gqjk5q4m2w0aejne",
+      "sender": "init1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqr5e3d",
+      "module_address": "0x1",
+      "module_name": "vip_score",
+      "function_name": "add_deployer_script",
+      "type_args":[],
+      "args":[
+          "AAAAAAAAAAAAAAAAcj54lEZt6YOXbMVDAvnENrMpEQY=" // deployerAddr
+      ],
+    }
+  ]
+}
+```
+
+
+```bash
+minitiad tx opchild execute-messages ./msg.json \
+  --from operator \
+  --chain-id [chain-id] \
+  --gas auto \
+  --gas-adjustment 1.5 \
+  --node [rpc-url]
+```
+
 
 By this, `deployer` can call `vip_score` contract to score user.
 
