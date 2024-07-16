@@ -73,8 +73,8 @@ const msg = new MsgExecuteMessages(validatorAddr, [
 
 You have to add your bcs serialized `deployerAddr` in `args` field.
 
-> For now, we can serialize bcs serialized addr using `initia.js`
-> we will soon support bcs serialization using `minitiad`
+> For now, we can serialize bcs serialized addr using `initia.js`.
+> we will soon support bcs serialization using `minitiad`.
 > 
 > ```typescript
 > import { bcs } from "@initia/initia.js"
