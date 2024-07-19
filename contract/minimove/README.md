@@ -29,6 +29,8 @@ minitiad move build
 
 ### 2. Deploy Contract
 
+> ❗Note❗The  `score.move` contract is a contract deployed only on L2. To deploy this contract, the key of the L2 operator (validator) is required.
+
 #### 1. Using `initia.js`
 
 ```typescript
