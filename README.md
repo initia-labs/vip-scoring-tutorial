@@ -28,8 +28,9 @@ VIP scoring process is as follows:
 
 This example is for `minimove` L2. If you are using other vm, check following:
 
-- miniwasm: [vip-cosmwasm](https://github.com/initia-labs/vip-cosmwasm)
-- minievm: [vip-evm](https://github.com/initia-labs/vip-evm)
+- minimove: [vip-move](./contract/minimove/README.md)
+- miniwasm: [vip-cosmwasm](./contract/miniwasm/README.md)
+- minievm: [vip-evm](./contract/minievm/README.md)
 
 Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
 
@@ -37,7 +38,7 @@ Note that the main purpose of `vip_score` is to score users based on the Minitia
 
 This limits the deployer address that can call `vip_score` contract. This is to prevent unauthorized access to the contract.
 
-> ❗Note❗ Same deployer can't be added more than oncet/sources/score_helper.move)
+> ❗Note❗ Same deployer can't be added more than once.
 
  
 ```rust
@@ -135,25 +136,7 @@ public entry fun update_score_script(
         stage: u64,
         addrs: vector<address>,
         scores: vector<u64>
-) acquires ModuleStore {
-    assert!(
-        vector::length(&addrs) == vector::length(&scores),
-        error::invalid_argument(ENOT_MATCH_LENGTH)
-    );
-    prepare_stage(deployer, stage);
-
-    vector::enumerate_ref(
-        &addrs,
-        |i, addr| {
-            update_score(
-                deployer,
-                *addr,
-                stage,
-                *vector::borrow(&scores, i),
-            );
-        }
-    );
-}
+) acquires ModuleStore {}
 ```
 
 
