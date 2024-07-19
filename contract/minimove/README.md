@@ -45,6 +45,8 @@ const msg = new MsgExecuteMessages(validatorAddr, [
 
 #### 2. Using `minitiad`
 
+You can get `code_bytes` easily by using some [tools](https://base64.guru/converter/encode/file).
+
 ```json
 // msg.json
 {
