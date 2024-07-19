@@ -4,7 +4,7 @@
 
 ### 1. Compile
 
-> ❗Note❗ Check the `rev = "main"` in `Move.toml`. The value should be the same as the commit hash of the movevm version. You can check your `movevm` version in minimove `go.mod` file. 
+> ❗Note❗ Check the `rev = "e13e78d"` in `Move.toml`. The value should be the same as the commit hash of the movevm version. You can check your `movevm` version in minimove `go.mod` file. 
 
 Compile the contract by running the following command:
 
