@@ -6,24 +6,10 @@
 
 > ❗Note❗ Check the `rev = "main"` in `Move.toml`. The value should be the same as the commit hash of the movevm version. You can check your `movevm` version in minimove `go.mod` file. 
 
-```
-// go.mod
-module github.com/initia-labs/minimove
-
-go 1.22
-
-toolchain go1.22.2
-
-require (
-    ...
-	github.com/initia-labs/movevm v0.2.12
-    ...
-)
-```
-
 Compile the contract by running the following command:
 
 ```bash
+cd contract/minimove
 minitiad move build
 ```
 
@@ -32,7 +18,6 @@ If compiled successfully, you can get `build` directory like:
 ```
 .
 ├── Move.toml
-├── README.md
 ├── build
 └── sources
     └── score.move
