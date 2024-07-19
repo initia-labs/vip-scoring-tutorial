@@ -46,17 +46,27 @@ const msg = new MsgExecuteMessages(validatorAddr, [
 #### 2. Using `minitiad`
 
 ```json
+// msg.json
 {
   "messages": [
     {
       "@type": "/initia.move.v1.MsgGovPublish",
       "authority": "init1gz9n8jnu9fgqw7vem9ud67gqjk5q4m2w0aejne",
       "sender": "init1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqr5e3d",
-      "code_bytes": "oRzrCwYAAAAJAQAEAwRVBVkaB3PHAgi6AyAG2gMgEPoDjAIMhga...", // base64 code bytes
-      "upgrade_policy": "1",
+      "code_bytes": ["oRzrCwYAAAALAQAOAg4oAzb9AQSzA..."], // vip_score.mv
+      "upgrade_policy": 1 // compatible policy
     }
   ]
 }
+```
+
+```bash
+minitiad tx opchild execute-messages ./msg.json \
+  --from operator \
+  --chain-id [chain-id] \
+  --gas auto \
+  --gas-adjustment 1.5 \
+  --node [rpc-url]
 ```
 
 ## How to Use
