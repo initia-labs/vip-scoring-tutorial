@@ -13,7 +13,7 @@ VIP scoring process is as follows:
     - Initia provides `vip_score` contracts as default. (e.g. [vip_score.move](https://github.com/initia-labs/movevm/blob/main/precompile/modules/minitia_stdlib/sources/vip/score.move) for minimove)
     - For scoring user, Minitia should whitelist `deployer` address on `vip_score` contract.
     - The `deployer` could call `vip_score` contract to score users.
-    - See [Scoring](#Scoring) section for detailed information about how to score users.
+    - See [Scoring](#step-2-scoring) section for detailed information about how to score users.
     - Finalize the stage when scoring is done. (no more scoring is allowed)
 3. The VIP agent will take a snapshot of the scores.
     - VIP agent is an entity that is in charge of submitting snapshots of the scores, and is selected through Initia governance.
