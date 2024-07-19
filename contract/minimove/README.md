@@ -27,6 +27,19 @@ Compile the contract by running the following command:
 minitiad move build
 ```
 
+If compiled successfully, you can get `build` directory like:
+
+```
+.
+├── Move.toml
+├── README.md
+├── build
+└── sources
+    └── score.move
+```
+
+Get the `vip_score.mv` from `build/score/bytecode_modules/vip_score.mv`
+
 ### 2. Deploy Contract
 
 > ❗Note❗The  `score.move` contract is a contract deployed only on L2. To deploy this contract, the key of the L2 operator (validator) is required.
