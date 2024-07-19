@@ -6,7 +6,7 @@
 
 > ❗Note❗ Check the `rev = "main"` in `Move.toml`. The value should be the same as the commit hash of the movevm version. You can check your `movevm` version in minimove `go.mod` file. 
 
-```toml
+```
 // go.mod
 module github.com/initia-labs/minimove
 
