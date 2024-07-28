@@ -63,8 +63,9 @@ async function claimOperatorVesting() {
       mnemonic: 'beauty sniff protect ...',
     });
     const wallet = new Wallet(lcd, key);
-    
-    const stages = [1,2,3,4,5]; // stages to claim
+
+    const bridgeId = 1;
+    const stages = [1,2,3]; // stages to claim
     const msgs = [
       new MsgExecute(
         key.accAddress,
@@ -73,6 +74,7 @@ async function claimOperatorVesting() {
         'batch_claim_operator_reward_script',
         [],
         [
+            bcs.u64().serialize(bridgeId).toBase64(),
             bcs.vector(bcs.u64()).serialize(stages).toBase64(),
         ]
       ),
