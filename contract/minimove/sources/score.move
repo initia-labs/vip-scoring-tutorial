@@ -49,6 +49,9 @@ module minitia_std::vip_score {
 
     // The previous stage is not finalized.
     const EPREVIOUS_STAGE_NOT_FINALIZED: u64 = 9;
+
+    //
+    const ESCORE_LENGTH: u64 = 10;
     //
     // Events
     //
@@ -89,6 +92,7 @@ module minitia_std::vip_score {
             }
         );
     }
+
     /// Check signer is chain
     fun check_chain_permission(chain: &signer) {
         assert!(
@@ -131,12 +135,17 @@ module minitia_std::vip_score {
         )
     }
 
-    fun check_previous_stage_finalized(scores: &ModuleStore, stage: u64) {
-        // stage 0 is always finalized because it is the first stage.
-        if (stage == 1) { return };
+    fun check_previous_stage_finalized(
+        module_store: &ModuleStore,
+        stage: u64
+    ) {
+        minitia_std::debug::print(&stage);
+        // TODO: remove on the mainnet 
+        // init stage is always finalized because it is the first stage.
+        if (stage == 1 || stage == 0) { return };
         assert!(
-            table::contains(&scores.scores, stage - 1) && table::borrow(
-                &scores.scores, stage - 1
+            table::contains(&module_store.scores, stage - 1) && table::borrow(
+                &module_store.scores, stage - 1
             ).is_finalized,
             error::invalid_argument(EPREVIOUS_STAGE_NOT_FINALIZED)
         );
@@ -273,12 +282,12 @@ module minitia_std::vip_score {
         amount: u64
     ) acquires ModuleStore {
 
-        check_deployer_permission(deployer);
+        // permission check is performed in prepare_stage
+        prepare_stage(deployer, stage);
         assert!(
             amount >= 0,
             error::invalid_argument(EINVALID_SCORE)
         );
-
         let module_store = borrow_global_mut<ModuleStore>(@minitia_std);
         check_previous_stage_finalized(module_store, stage);
         assert!(
@@ -323,7 +332,10 @@ module minitia_std::vip_score {
         addrs: vector<address>,
         update_scores: vector<u64>
     ) acquires ModuleStore {
-
+        assert!(
+            vector::length(&update_scores) != 0,
+            error::invalid_argument(ESCORE_LENGTH)
+        );
         assert!(
             vector::length(&addrs) == vector::length(&update_scores),
             error::invalid_argument(ENOT_MATCH_LENGTH)
@@ -468,7 +480,7 @@ module minitia_std::vip_score {
     }
 
     #[test(chain = @0x1, deployer = @0x2)]
-    #[expected_failure(abort_code = 0x10006, location = Self)]
+    #[expected_failure(abort_code = 0x1000A, location = Self)]
     fun failed_not_match_length(chain: &signer, deployer: &signer) acquires ModuleStore {
         init_module_for_test(chain);
         add_deployer_script(chain, signer::address_of(deployer));
@@ -613,6 +625,18 @@ module minitia_std::vip_score {
 
         let next_stage = 2;
         update_score_script(deployer, next_stage, addrs, scores);
+
+    }
+
+    #[test(chain = @0x1, deployer = @0x2)]
+    fun test_init_stage_0_and_update_score(chain: &signer, deployer: &signer) acquires ModuleStore {
+        init_module_for_test(chain);
+        let init_stage = 0;
+        add_deployer_script(chain, signer::address_of(deployer));
+        update_score(deployer, @0x123, init_stage,  100);
+        finalize_script(deployer, init_stage);
+        let next_stage = 1;
+        update_score(deployer, @0x123, next_stage,  200);
 
     }
 
