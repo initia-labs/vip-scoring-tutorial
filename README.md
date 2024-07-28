@@ -26,7 +26,7 @@ VIP scoring process is as follows:
 
 ## Interacting with the `vip_score` contract
 
-This example is for `minimove` L2. If you are using other vm, check following:
+There are three types of `vip_score` contracts for each Minitia.
 
 - minimove: [vip-move](./contract/minimove/README.md)
 - miniwasm: [vip-cosmwasm](./contract/miniwasm/README.md)
@@ -34,142 +34,71 @@ This example is for `minimove` L2. If you are using other vm, check following:
 
 Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
 
-### Step 1. Whitelist Deployer
+## Claiming Operator Reward
 
-This limits the deployer address that can call `vip_score` contract. This is to prevent unauthorized access to the contract.
+This is a guide for claiming operator reward on VIP system. 
 
-> ❗Note❗ Same deployer can't be added more than once.
-
- 
-```rust
-// vip_score.move
-public entry fun add_deployer_script(chain: &signer, deployer: address) acquires ModuleStore {
-    check_chain_permission(chain);
-    let module_store = borrow_global_mut<ModuleStore>(@minitia_std);
-    ///
-    /// ....
-    ///
-}
-```
+- The operator address and bridge_id should match the information whitelisted during registration in the VIP system. 
+- The operator reward must be claimed on the L1 chain, not on the L2 chain.
+- All stages that can be claimed must be provided in sequence.
 
 #### 1. Using `initia.js`
 
-You can add a deployer address to the whitelist by calling `add_deployer_script` function. This function is only callable by the chain.
- 
 ```typescript
-const msg = new MsgExecuteMessages(validatorAddr, [
-    new MsgGovExecute(
-      'init1gz9n8jnu9fgqw7vem9ud67gqjk5q4m2w0aejne', // opchild module addr
-      'init1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqr5e3d', // 0x1
-      '0x1',
-      'vip_score',
-      'add_deployer_script',
-      [],
-      [bcs.address().serialize(deployerAddr).toBase64()]
-    )
-])
-```
-
-#### 2. Using `minitiad`
-
-You have to add your bcs serialized `deployerAddr` in `args` field.
-
-> For now, we can serialize bcs serialized addr using `initia.js`.
-> we will soon support bcs serialization using `minitiad`.
-> 
-> ```typescript
-> import { bcs } from "@initia/initia.js"
-> console.log(bcs.address().serialize("init1wgl839zxdh5c89mvc4ps97wyx6ejjygxs4qmcx").toBase64()) // AAAAAAAAAAAAAAAAcj54lEZt6YOXbMVDAvnENrMpEQY=
-> ```
-
-```json
-// msg.json
-{
-  "messages": [
-    {
-      "@type": "/initia.move.v1.MsgGovExecute",
-      "authority": "init1gz9n8jnu9fgqw7vem9ud67gqjk5q4m2w0aejne",
-      "sender": "init1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpqr5e3d",
-      "module_address": "0x1",
-      "module_name": "vip_score",
-      "function_name": "add_deployer_script",
-      "type_args":[],
-      "args":[
-          "AAAAAAAAAAAAAAAAcj54lEZt6YOXbMVDAvnENrMpEQY=" // deployerAddr
-      ]
-    }
-  ]
+import {
+    bcs,
+    LCDClient,
+    MnemonicKey,
+    MsgExecute,
+    Wallet,
+} from '@initia/initia.js';
+  
+async function claimOperatorVesting() {
+    const lcd = new LCDClient('[rest-url]', {
+      gasPrices: '0.15uinit',
+      gasAdjustment: '1.5',
+    });
+  
+    const key = new MnemonicKey({
+      mnemonic: 'beauty sniff protect ...',
+    });
+    const wallet = new Wallet(lcd, key);
+    
+    const stages = [1,2,3,4,5]; // stages to claim
+    const msgs = [
+      new MsgExecute(
+        key.accAddress,
+        '0x1',
+        'vip',
+        'batch_claim_operator_reward_script',
+        [],
+        [
+            bcs.vector(bcs.u64()).serialize(stages).toBase64(),
+        ]
+      ),
+    ];
+  
+    // sign tx
+    const signedTx = await wallet.createAndSignTx({ msgs });
+    // send(broadcast) tx
+    lcd.tx.broadcastSync(signedTx).then(res => console.log(res));
+    // {
+    //   height: 0,
+    //   txhash: '0F2B255EE75FBA407267BB57A6FF3E3349522DA6DBB31C0356DB588CC3933F37',
+    //   raw_log: '[]'
+    // }
 }
+  
+claimOperatorVesting();
 ```
 
+#### 2. Using `initiad`
 
-```bash
-minitiad tx opchild execute-messages ./msg.json \
-  --from operator \
-  --chain-id [chain-id] \
-  --gas auto \
-  --gas-adjustment 1.5 \
-  --node [rpc-url]
+```shell
+# assume that claiming operator reward for stages 1,2,3
+initiad tx move execute 0x1 vip batch_claim_operator_reward_script \
+ --args '["u64:1", "vector<u64>:1,2,3"]' \ 
+ --from [key-name] \
+ --gas auto --gas-adjustment 1.5 --gas-prices 0.15uinit \
+ --node [rpc-url]:[rpc-port] --chain-id [chain-id]
 ```
-
-By this, `deployer` can call `vip_score` contract to score user.
-
-### Step 2. Scoring
-
-There are two ways to score users.
-
-#### 1. Integrate with a smart contract
-
-This method integrates scoring logic with the smart contract. This is useful when the scoring logic is simple and can be done in a single transaction. 
-
-Check the example contract. See [example](./example/1.integrate-with-contract/)
-
-> ❗Note❗ For integrate with contract, you should call `prepare_stage` function before scoring users. You can call this function only once for each stage. This function will initialize the stage and set the stage as active. See `fun prepare_stage_script()` function in [score_helper.move](./example/1.integrate-with-contract/sources/score_helper.move)
-
-#### 2. Update with script
-
-This method is useful when the scoring logic is complex and requires multiple transactions. In this case, you can update all scores at once by calling `update_score_script` function.
-
-```rust
-public entry fun update_score_script(
-        deployer: &signer,
-        stage: u64,
-        addrs: vector<address>,
-        scores: vector<u64>
-) acquires ModuleStore {}
-```
-
-
-Calling `update_score_script` function might exceed the gas limit if the number of users is too large. In this case, you can divide the users into multiple transactions. 
-
-Check the example script to update the score. See [example](./example/2.update-with-script)
-
-
-### Step 3. Finalize Stage
-
-Finalizing the stage is the last step of the scoring process. After this, no more scoring is allowed until the next stage. Stage must be finalized in order for the VIP agent to take a snapshot of the scoring result. If not finalized, reward distribution will not happen. 
-
-```rust
-// vip_score.move
-public entry fun finalize_script(deployer: &signer, stage: u64) acquires ModuleStore {
-    check_deployer_permission(deployer);
-    let module_store = borrow_global_mut<ModuleStore>(@minitia_std);
-    ///
-    /// ....
-    ///
-}
-```
-
-```typescript
-const msg = new MsgExecute(
-    deployerAddr,
-    '0x1',
-    'vip_score',
-    'finalize_script',
-    [],
-    [bcs.u64().serialize(stage).toBase64()]
-)
-```
-
-
-

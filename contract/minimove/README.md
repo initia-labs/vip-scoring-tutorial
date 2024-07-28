@@ -75,6 +75,16 @@ minitiad tx opchild execute-messages ./msg.json \
 
 ### Step 1. Whitelist Deployer
 
+This limits the deployer address that can call `vip_score` contract. This is to prevent unauthorized access to the contract.
+
+> ❗Note❗ Same deployer can't be added more than once.
+
+ 
+```rust
+// vip_score.move
+public entry fun add_deployer_script(chain: &signer, deployer: address) acquires ModuleStore {}
+```
+
 #### 1. Using `initia.js`
 
 ```typescript
@@ -132,6 +142,8 @@ minitiad tx opchild execute-messages ./msg.json \
   --node [rpc-url]
 ```
 
+By this, `deployer` can call `vip_score` contract to score user.
+
 ### Step 2. Prepare Stage
 
 ```rust
@@ -152,14 +164,30 @@ const msg = new MsgExecute(
 
 ### Step 3. Scoring
 
+There are two ways to score users.
+
+#### 1. Integrate with a smart contract
+
+This method integrates scoring logic with the smart contract. This is useful when the scoring logic is simple and can be done in a single transaction. 
+
+Check the example contract. See [example](./example/1.integrate-with-contract/)
+
+> ❗Note❗ For integrate with contract, you should call `prepare_stage` function before scoring users. You can call this function only once for each stage. This function will initialize the stage and set the stage as active. See `fun prepare_stage_script()` function in [score_helper.move](./example/1.integrate-with-contract/sources/score_helper.move)
+
+#### 2. Update with script
+
+This method is useful when the scoring logic is complex and requires multiple transactions. In this case, you can update all scores at once by calling `update_score_script` function.
+
 ```rust
 public entry fun update_score_script(
-    deployer: &signer,
-    stage: u64,
-    addrs: vector<address>,
-    scores: vector<u64>
+        deployer: &signer,
+        stage: u64,
+        addrs: vector<address>,
+        scores: vector<u64>
 ) acquires ModuleStore {}
 ```
+
+Calling `update_score_script` function might exceed the gas limit if the number of users is too large. In this case, you can divide the users into multiple transactions. 
 
 ```typescript
 const BCS_BUFFER_SIZE = 1000 * 1024 // 1MB
@@ -177,8 +205,12 @@ const msg = new MsgExecute(
 )
 ```
 
+Check the example script to update the score. See [example](./example/2.update-with-script)
+
 
 ### Step 4. Finalize Stage
+
+Finalizing the stage is the last step of the scoring process. After this, no more scoring is allowed until the next stage. Stage must be finalized in order for the VIP agent to take a snapshot of the scoring result. If not finalized, reward distribution will not happen. 
 
 ```rust
 // vip_score.move
