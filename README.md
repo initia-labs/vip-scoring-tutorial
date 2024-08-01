@@ -28,9 +28,9 @@ VIP scoring process is as follows:
 
 There are three types of `vip_score` contracts for each Minitia.
 
-- minimove: [vip-move](./contract/minimove/README.md)
-- miniwasm: [vip-cosmwasm](./contract/miniwasm/README.md)
-- minievm: [vip-evm](./contract/minievm/README.md)
+- minimove: [vip-move](./minimove/README.md)
+- miniwasm: [vip-cosmwasm](./miniwasm/README.md)
+- minievm: [vip-evm](./minievm/README.md)
 
 Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
 
