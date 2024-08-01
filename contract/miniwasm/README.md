@@ -1,4 +1,4 @@
-# VIP Score
+# VIP Score for MiniWasm
 
 ## InstantiateMsg
 
