@@ -1,1 +1,0 @@
-2e212f5b639f91667a1e0e607a52c0e1978335fa0d40f6a75eaf2dbefaceb729  ./target/wasm32-unknown-unknown/release/vip_score.wasm
