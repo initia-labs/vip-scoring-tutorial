@@ -40,7 +40,9 @@ This is a guide for claiming operator reward on VIP system.
 
 - The operator address and bridge_id should match the information whitelisted during registration in the VIP system. 
 - The operator reward must be claimed on the L1 chain, not on the L2 chain.
-- All stages that can be claimed must be provided in sequence.
+- The operator should provide the version to claim the reward.
+
+> Version is used to distinguish the operator vesting position when the operator is deregistered and registered again. Version is increased by 1 when the operator is registered again and starts from 1.
 
 #### 1. Using `initia.js`
 
@@ -65,7 +67,7 @@ async function claimOperatorVesting() {
     const wallet = new Wallet(lcd, key);
 
     const bridgeId = 1;
-    const stages = [1,2,3]; // stages to claim
+    const version = 1; // version to claim
     const msgs = [
       new MsgExecute(
         key.accAddress,
@@ -75,14 +77,14 @@ async function claimOperatorVesting() {
         [],
         [
             bcs.u64().serialize(bridgeId).toBase64(),
-            bcs.vector(bcs.u64()).serialize(stages).toBase64(),
+            bcs.u64().serialize(version).toBase64(),
         ]
       ),
     ];
   
     // sign tx
     const signedTx = await wallet.createAndSignTx({ msgs });
-    // send(broadcast) tx
+    // broadcast tx
     lcd.tx.broadcastSync(signedTx).then(res => console.log(res));
     // {
     //   height: 0,
@@ -97,9 +99,9 @@ claimOperatorVesting();
 #### 2. Using `initiad`
 
 ```shell
-# assume that claiming operator reward for stages 1,2,3
+# assume that claiming operator reward for version 1 on bridge_id 1
 initiad tx move execute 0x1 vip batch_claim_operator_reward_script \
- --args '["u64:1", "vector<u64>:1,2,3"]' \ 
+ --args '["u64:1", "u64:1"]' \ 
  --from [key-name] \
  --gas auto --gas-adjustment 1.5 --gas-prices 0.15uinit \
  --node [rpc-url]:[rpc-port] --chain-id [chain-id]
