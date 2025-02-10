@@ -1,5 +1,24 @@
 # VIP Scoring Tutorial
 
+## Summary
+
+- Deploy `vip_score` contract for scoring users.
+- Share following information to Initia team for whitelisting:
+  - Deployed VIP Contract Address (move chain is precompiled at `0x1`)
+  - VIP Operator Address (account that will receive the VIP operating commission)
+  - VIP scoring Policy (for reference, check [vip page](https://app.testnet.initia.xyz/vip))
+    ```json
+    // This is an example of scoring policy
+    "categories": ["L2", "Social"], // categories of the Minitia
+    "description": "Mint cities, collect yield, and collaborate within communities to acquire control of the planet.", // description of the Minitia
+    "actions": [
+      {
+        "action": "Earn SILVER", // action name
+        "description": "Earn SILVER by playing Civitia seasons with an active residence." // action description
+      }
+    ]
+    ```
+
 ## Introduction
 In VIP, a scoring system exists in order to distribute esINIT rewards to the users based on their activities in a Minitia.
 
@@ -33,6 +52,12 @@ There are three types of `vip_score` contracts for each Minitia.
 - minievm: [vip-evm](https://github.com/initia-labs/vip-evm/blob/927653295803716e4aaf14c6ffa24924f664e359/README.md)
 
 Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
+
+> We allow modifications to the score contract, but you must follow these rules:
+> - The interface and ABI must not be changed: you can add or modify functions, but you cannot change the existing interface.
+> - Once finalized, the score must not be changed.
+> - You can deploy it to a different address (not 0x1), but the module name must remain score. (only for move chain)
+
 
 ## Claiming Operator Reward
 
