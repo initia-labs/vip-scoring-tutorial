@@ -6,17 +6,31 @@
 - Share following information to Initia team for whitelisting:
   - Deployed VIP Contract Address (move chain is precompiled at `0x1`)
   - VIP Operator Address (account that will receive the VIP operating commission)
-  - VIP scoring Policy (for reference, check [vip page](https://app.testnet.initia.xyz/vip))
+  - Update `profile.json` on [initia-registry](https://github.com/initia-labs/initia-registry) for VIP scoring Policy (for reference, check [vip page](https://app.testnet.initia.xyz/vip))
     ```json
-    // This is an example of scoring policy
-    "categories": ["L2", "Social"], // categories of the Minitia
-    "description": "Mint cities, collect yield, and collaborate within communities to acquire control of the planet.", // description of the Minitia
-    "actions": [
-      {
-        "action": "Earn SILVER", // action name
-        "description": "Earn SILVER by playing Civitia seasons with an active residence." // action description
+    // This is an example of profile.json
+    {
+      "$schema": "../../profile.schema.json",
+      "name": "yominet",
+      "pretty_name": "Kamigotchi",
+      "category": "Gaming",
+      "l2": true,
+      "description": "The first economically independent virtual world living onchain. Home to the Kamigotchi.",
+      "summary": "Economically independent, onchain virtual world",
+      "color": "#42F771",
+      "status": "live",
+      "vip": {
+        "actions": [
+          {
+            "title": "Complete Quest",
+            "description": "Completing VIP quests in-game for each epoch."
+          }
+        ]
+      },
+      "social": {
+        "website": "https://playtest.kamigotchi.io"
       }
-    ]
+    }
     ```
 
 ## Introduction
