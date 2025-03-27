@@ -2,32 +2,11 @@
 
 ## How to Setup
 
-### 1. Compile
+### Step 1. Deploy `vip_score` contract
 
-> ❗Note❗ Check the `rev = "e13e78d"` in `Move.toml`. The value should be the same as the commit hash of the movevm version. You can check your `movevm` version in minimove `go.mod` file. 
+Score contract for minimove is natively deployed on `0x1::vip_score`. So you don't need to deploy the contract manually.
 
-Compile the contract by running the following command:
-
-```bash
-cd contract/minimove
-minitiad move build
-```
-
-If compiled successfully, you can get `build` directory like:
-
-```
-.
-├── Move.toml
-├── build
-└── sources
-    └── score.move
-```
-
-Get the `vip_score.mv` from `build/score/bytecode_modules/vip_score.mv`
-
-### 2. Deploy Contract
-
-> ❗Note❗The  `score.move` contract is a contract deployed only on L2. To deploy this contract, the key of the L2 operator (validator) is required.
+## How to Use
 
 #### 1. Using `initia.js`
 
