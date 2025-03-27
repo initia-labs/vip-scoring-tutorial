@@ -1,6 +1,8 @@
 [submodule "miniwasm"]
 	path = miniwasm
 	url = https://github.com/initia-labs/vip-cosmwasm
+	branch = main
 [submodule "minievm"]
 	path = minievm
 	url = https://github.com/initia-labs/vip-evm
+	branch = main
