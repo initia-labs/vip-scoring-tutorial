@@ -4,7 +4,7 @@
 
 - Deploy `vip_score` contract for scoring users.
 - Share following information to Initia team for whitelisting:
-  - Deployed VIP Contract Address (move chain is precompiled at `0x1`)
+  - VIP Contract Address
   - VIP Operator Address (account that will receive the VIP operating commission)
   - Update `profile.json` on [initia-registry](https://github.com/initia-labs/initia-registry) for VIP scoring Policy (for reference, check [vip page](https://app.testnet.initia.xyz/vip))
     ```json
@@ -39,18 +39,18 @@ In VIP, a scoring system exists in order to distribute esINIT rewards to the use
 VIP scoring process is as follows:
 
 1. Whitelist a Minitia on VIP system
-    - Minitias are whitelisted through a whitelisting proposal on Initia's governance.
-    - The information required to whitelist a Minitia are `bridge`, `contract`, and `operator` addresses. (see [vip.move](https://github.com/initia-labs/movevm/blob/cbb9e0d2d903b79fd0d2bcfed1aa01c7503ca98c/precompile/modules/initia_stdlib/sources/vip/vip.move#L868))
-2. Minitias score users based on their activities on each stage.
-    - The scoring policy is determined completely by Minitias.
-    - Initia provides `vip_score` contracts as default. (e.g. [vip_score.move](https://github.com/initia-labs/movevm/blob/main/precompile/modules/minitia_stdlib/sources/vip/score.move) for minimove)
+    - Rollups are whitelisted through a whitelisting proposal on Initia's governance.
+    - The information required to whitelist a Minitia are `bridge`, `contract`, and `operator` addresses.
+2. Rollups score users based on their activities on each stage.
+    - The scoring policy is determined completely by Rollups.
+    - Initia provides `vip_score` contracts as default.
     - For scoring user, Minitia should whitelist `deployer` address on `vip_score` contract.
     - The `deployer` could call `vip_score` contract to score users.
     - See [Scoring](#step-2-scoring) section for detailed information about how to score users.
     - Finalize the stage when scoring is done. (no more scoring is allowed)
 3. The VIP agent will take a snapshot of the scores.
     - VIP agent is an entity that is in charge of submitting snapshots of the scores, and is selected through Initia governance.
-    - VIP agent will only take snapshots of Minitias that have finalized the stage. 
+    - VIP agent will only take snapshots of Rollups that have finalized the stage. 
     - Rewards will be distributed to the users based on the snapshot.
 4. User can claim the reward.
     - User can claim the reward after the snapshot is taken.
@@ -61,11 +61,11 @@ VIP scoring process is as follows:
 
 There are three types of `vip_score` contracts for each Minitia.
 
-- minimove: [vip-move](./minimove/README.md)
-- miniwasm: [vip-cosmwasm](https://github.com/initia-labs/vip-cosmwasm/blob/14bab45bc5dbc3d3efd29ce987658489fa541d54/README.md)
-- minievm: [vip-evm](https://github.com/initia-labs/vip-evm/blob/927653295803716e4aaf14c6ffa24924f664e359/README.md)
+- minimove: [vip-score-move](https://github.com/initia-labs/vip-score-move.git)
+- miniwasm: [vip-score-wasm](https://github.com/initia-labs/vip-score-wasm.git)
+- minievm: [vip-score-evm](https://github.com/initia-labs/vip-score-evm.git)
 
-Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Minitias should record the score of users on the same `vip_score` contract interface for snapshot.
+Note that the main purpose of `vip_score` is to score users based on the Minitia's scoring policy. The VIP agent does not interfere with the scoring policies, but Rollups should record the score of users on the same `vip_score` contract interface for snapshot.
 
 > We allow modifications to the score contract, but you must follow these rules:
 > - The interface and ABI must not be changed: you can add or modify functions, but you cannot change the existing interface.
@@ -88,22 +88,22 @@ This is a guide for claiming operator reward on VIP system.
 ```typescript
 import {
     bcs,
-    LCDClient,
+    RESTClient,
     MnemonicKey,
     MsgExecute,
     Wallet,
 } from '@initia/initia.js';
   
 async function claimOperatorVesting() {
-    const lcd = new LCDClient('[rest-url]', {
-      gasPrices: '0.15uinit',
+    const rest = new RESTClient('[rest-url]', {
+      gasPrices: '0.015uinit',
       gasAdjustment: '1.5',
     });
   
     const key = new MnemonicKey({
       mnemonic: 'beauty sniff protect ...',
     });
-    const wallet = new Wallet(lcd, key);
+    const wallet = new Wallet(rest, key);
 
     const bridgeId = 1;
     const version = 1; // version to claim
@@ -124,7 +124,7 @@ async function claimOperatorVesting() {
     // sign tx
     const signedTx = await wallet.createAndSignTx({ msgs });
     // broadcast tx
-    lcd.tx.broadcastSync(signedTx).then(res => console.log(res));
+    rest.tx.broadcastSync(signedTx).then(res => console.log(res));
     // {
     //   height: 0,
     //   txhash: '0F2B255EE75FBA407267BB57A6FF3E3349522DA6DBB31C0356DB588CC3933F37',
