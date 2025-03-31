@@ -1,8 +1,12 @@
-[submodule "miniwasm"]
-	path = miniwasm
-	url = https://github.com/initia-labs/vip-cosmwasm
-	branch = main
-[submodule "minievm"]
-	path = minievm
-	url = https://github.com/initia-labs/vip-evm
-	branch = main
+[submodule "vip-score-wasm"]
+	path = vip-score-wasm
+	url = https://github.com/initia-labs/vip-score-wasm.git
+    branch = main
+[submodule "vip-score-evm"]
+	path = vip-score-evm
+	url = https://github.com/initia-labs/vip-score-evm.git
+    branch = main
+[submodule "vip-score-move"]
+	path = vip-score-move
+	url = https://github.com/initia-labs/vip-score-move.git
+    branch = main
